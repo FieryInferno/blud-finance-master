@@ -1,0 +1,286 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Models\PrefixPenomoran;
+use App\Http\Controllers\Controller;
+use App\Repositories\BKU\BKURincianRepository;
+use Symfony\Component\HttpFoundation\Request;
+use App\Repositories\Penerimaan\STSRepository;
+use App\Repositories\Organisasi\UnitKerjaRepository;
+use App\Repositories\Penerimaan\STSRincianRepository;
+use App\Repositories\Pengaturan\PrefixPenomoranRepository;
+/** PHPSpreadsheet */
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+
+class ReportBendaharaPenerimaController extends Controller
+{
+    /**
+     * Unit kerja repository
+     *
+     * @var UnitKerjaRepository
+     */
+    private $unitKerja;
+
+    /**
+     * Sts repository
+     *
+     * @var StsRepository
+     */
+    private $sts;
+
+    /**
+     * Sts Rincian repository
+     *
+     * @var StsRepository
+     */
+    private $stsRincian;
+
+    /**
+     * Prefix Penomoran repository
+     *
+     * @var PrefixPenomoranRepository
+     */
+    private $prefixPenomoran;
+
+    /**
+     * BKU Rincian Repository
+     *
+     * @var BKURincianRepository
+     */
+    private $bkuRincian;
+    
+
+    public function __construct(
+        UnitKerjaRepository $unitKerja,
+        STSRepository $sts,
+        PrefixPenomoranRepository $prefixPenomoran,
+        STSRincianRepository $stsRincian,
+        BKURincianRepository $bkuRincian
+    )
+    {
+        $this->unitKerja = $unitKerja;
+        $this->sts = $sts;
+        $this->prefixPenomoran = $prefixPenomoran;
+        $this->stsRincian = $stsRincian;
+        $this->bkuRincian = $bkuRincian;
+    }
+
+    public function report_test()
+    {
+        $spreadsheet = new Spreadsheet();
+
+        // Add some data
+        $spreadsheet->setActiveSheetIndex(0);
+        
+        $spreadsheet->getActiveSheet()
+                ->setCellValue('A1', 'Dinas Kesehatan Kota Malang')->mergeCells('A1:K1');
+        $spreadsheet->getActiveSheet()->getStyle('A1:K1')->getFont()->setBold(true)->setSize(15);
+        $spreadsheet->getActiveSheet()->getStyle('A1:K1')->getAlignment()
+                ->setVertical('center')
+                ->setHorizontal('center')
+                ->setWrapText(true);
+        
+        $spreadsheet->getActiveSheet()
+                ->setCellValue('A2', 'BLUD Puskesmas Dinoyo')->mergeCells('A2:K2');
+        $spreadsheet->getActiveSheet()->getStyle('A2:K2')->getFont()->setBold(true)->setSize(13);
+        $spreadsheet->getActiveSheet()->getStyle('A2:K2')->getAlignment()
+                ->setVertical('center')
+                ->setHorizontal('center')
+                ->setWrapText(true);
+
+        $spreadsheet->getActiveSheet()->setCellValue('A3', '')->mergeCells('A3:K3');
+
+        $spreadsheet->getActiveSheet()
+                ->setCellValue('A4', 'REGISTER STS')->mergeCells('A4:K4');
+        $spreadsheet->getActiveSheet()->getStyle('A4:K4')->getFont()->setBold(true)->setSize(15);
+        $spreadsheet->getActiveSheet()->getStyle('A4:K4')->getAlignment()
+                ->setVertical('center')
+                ->setHorizontal('center')
+                ->setWrapText(true);
+        
+        $spreadsheet->getActiveSheet()
+                    ->setCellValue('A5', 'Tahun Anggaran 2019')->mergeCells('A5:K5');
+        $spreadsheet->getActiveSheet()->getStyle('A5:K5')->getFont()->setBold(true)->setSize(13);
+        $spreadsheet->getActiveSheet()->getStyle('A5:K5')->getAlignment()
+                ->setVertical('center')
+                ->setHorizontal('center')
+                ->setWrapText(true);
+
+        $spreadsheet->getActiveSheet()
+                    ->setCellValue('A6', 'Periode 01 Januari 2019 s/d 11 Februari 2020')->mergeCells('A6:K6');
+        $spreadsheet->getActiveSheet()->getStyle('A6:K6')->getFont()->setBold(false)->setSize(8);
+        $spreadsheet->getActiveSheet()->getStyle('A6:K6')->getAlignment()
+                ->setVertical('center')
+                ->setHorizontal('center')
+                ->setWrapText(true);
+
+        $spreadsheet->getActiveSheet()
+                    ->setCellValue('A7', 'Bendahara Penerimaan : Tjitjik Agul Karjani')->mergeCells('A7:K7');
+        $spreadsheet->getActiveSheet()->getStyle('A7:K7')->getFont()->setBold(false)->setSize(8);
+        $spreadsheet->getActiveSheet()->getStyle('A7:K7')->getAlignment()
+                ->setVertical('center')
+                ->setHorizontal('left')
+                ->setWrapText(true);
+
+        $spreadsheet->getActiveSheet()->getStyle('A1:K100')->getFont()->setName('Arial');
+        $spreadsheet->getActiveSheet()->setTitle('Page 0');
+        
+        /** Create Sheet */
+        $spreadsheet->createSheet();
+        
+        // Add some data
+        $spreadsheet->setActiveSheetIndex(1)
+                ->setCellValue('A1', 'world!');
+
+        // Rename worksheet
+        $spreadsheet->getActiveSheet()->setTitle('Page 1');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+        
+        // Redirect output to a client's web browser (Xlsx)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="simple.xlsx"');
+        // header('Cache-Control: max-age=0');
+        // If you're serving to IE 9, then the following may be needed
+        // header('Cache-Control: max-age=1');
+        
+        // If you're serving to IE over SSL, then the following may be needed
+        // header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+        // header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
+        // header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+        // header('Pragma: public'); // HTTP/1.0
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+    }
+
+    /**
+     * Register sts view
+     *
+     * @return void
+     */
+    public function registerStsView()
+    {
+        $unitKerja = $this->unitKerja->get();
+
+        return view('admin.report_bendahara_penerima.register_sts', compact('unitKerja'));
+    }
+
+    /**
+     * Register sts
+     *
+     * @return void
+     */
+    public function registerSts(Request $request)
+    {
+        $prefix = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STS);
+        $this->prefixPenomoran->makeModel();
+        $prefixNl = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STSNL);
+
+        $stsRincian = $this->stsRincian->getAllRincian($request->kode_unit_kerja, $request->tanggal_awal, $request->tanggal_akhir);
+
+        $prefixPenomoran = explode('/', $prefix->format_penomoran);
+        $prefixPenomoranNl = explode('/', $prefixNl->format_penomoran);
+        $stsRincian->map(function ($item) use($prefixPenomoran, $prefixPenomoranNl){
+            if ($item->sts->nomor_otomatis) {
+                if ($item->sts->nl) {
+                    $nomorFix = nomor_fix($prefixPenomoranNl, $item->sts->nomor, $item->sts->kode_unit_kerja);
+                } else {
+                    $nomorFix = nomor_fix($prefixPenomoran, $item->sts->nomor, $item->sts->kode_unit_kerja);
+                }
+                $item->sts->nomorfix = $nomorFix;
+            } else {
+                $item->sts->nomorfix = $item->sts->nomor;
+            }
+        });
+        $contents = \View::make('admin.report.form_register_sts_excel', compact('stsRincian', 'request'));
+        return \Response::make($contents, 200)
+            ->header('Content-Type', 'application/vnd-ms-excel')
+            ->header('Content-Disposition', 'attachment; filename=report-register-sts.xls');
+    }
+
+    /**
+     * Bku Bendahara view
+     *
+     * @return void
+     */
+    public function bkuBendaharaView()
+    {
+        $unitKerja = $this->unitKerja->get();
+
+        return view('admin.report_bendahara_penerima.bku_bendahara', compact('unitKerja'));
+    }
+
+    /**
+     * Bku Bendahara view
+     *
+     * @return void
+     */
+    public function bkuBendahara(Request $request)
+    {
+        $this->bkuRincian->getAllBkuRincian($request->kode_unit_kerja, $request->tanggal_awal, $request->tanggal_akhir);
+
+        return view('admin.report.form_bku_bendahara_excel');
+
+    }
+
+    /**
+     * Rincian objek penerimaan
+     *
+     * @return void
+     */
+    public function objekPenerimaanView()
+    {
+        $unitKerja = $this->unitKerja->get();
+
+        return view('admin.report_bendahara_penerima.objek_penerimaan', compact('unitKerja'));
+    }
+
+    /**
+     * Rincian objek penerimaan
+     *
+     * @return void
+     */
+    public function objekPenerimaan(Request $request)
+    {
+        $prefixBku = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_BKU_PENERIMAAN);
+        $prefixPenomoranBku = explode('/', $prefixBku->format_penomoran);
+
+        $this->prefixPenomoran->makeModel();
+        $prefixSts = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STS);
+        $prefixPenomoranSts = explode('/', $prefixSts->format_penomoran);
+
+        $this->prefixPenomoran->makeModel();
+        $prefixNl = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STSNL);
+        $prefixPenomoranStsNL = explode('/', $prefixNl->format_penomoran);
+
+
+        $bkuRincian = $this->bkuRincian->getAllBkuRincian($request->kode_unit_kerja, $request->tanggal_awal, $request->tanggal_akhir);
+        $bkuRincian->map(function ($item) use($prefixPenomoranBku, $prefixPenomoranSts, $prefixPenomoranStsNL){
+            if ($item->bku->nomor_otomatis){
+                $nomorBku = nomor_fix($prefixPenomoranBku, $item->bku->nomor, $item->bku->kode_unit_kerja);
+                $item->bku->nomorbku = $nomorBku;
+            }else {
+                $item->bku->nomorbku = $item->bku->nomor;
+            }
+
+            if ($item->sts->nomor_otomatis) {
+                if ($item->sts->nl) {
+                    $nomorSts = nomor_fix($prefixPenomoranStsNL, $item->sts->nomor, $item->sts->kode_unit_kerja);
+                } else {
+                    $nomorSts = nomor_fix($prefixPenomoranSts, $item->sts->nomor, $item->sts->kode_unit_kerja);
+                }
+                $item->sts->nomorsts = $nomorSts;
+            } else {
+                $item->sts->nomorsts = $item->sts->nomor;
+            }
+        });
+        $contents = \View::make('admin.report.form_bppop_excel', compact('bkuRincian'));
+        return \Response::make($contents, 200)
+            ->header('Content-Type', 'application/vnd-ms-excel')
+            ->header('Content-Disposition', 'attachment; filename=report-bppop.xls');
+    }
+}
