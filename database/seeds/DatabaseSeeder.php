@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             PrefixPenomoranTableSeeder::class,
-            RekeningBendaharaTableSeeder::class,
-            StsNLSeeder::class,
+            // RekeningBendaharaTableSeeder::class,
+            // StsNLSeeder::class,
         ]);
     }
 }
