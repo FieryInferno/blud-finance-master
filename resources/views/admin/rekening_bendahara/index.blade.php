@@ -132,7 +132,7 @@
               <label>Kode Akun</label>
               <select name="kode_akun" class="form-control">
                 <option value="" selected disabled>-- Pilih Akun --</option>
-                @foreach ($akun as $item)
+                @foreach ($sortedAkun as $item)
                   <option value="{{ $item->kode_akun }}">{{ $item->kode_akun }} - {{ $item->nama_akun }}</option>
                 @endforeach
               </select>
@@ -201,7 +201,7 @@
               <label>Kode Akun</label>
               <select name="kode_akun" id="edit-kode-akun" class="form-control">
                 <option value="" selected disabled>-- Pilih Akun --</option>
-                @foreach ($akun as $item)
+                @foreach ($sortedAkun as $item)
                   <option value="{{ $item->kode_akun }}">{{ $item->kode_akun }} - {{ $item->nama_akun }}</option>
                 @endforeach
               </select>

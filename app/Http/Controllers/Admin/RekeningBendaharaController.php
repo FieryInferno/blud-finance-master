@@ -56,14 +56,15 @@ class RekeningBendaharaController extends Controller
         $bendahara = $this->rekeningBendahara->get(['*'], null, ['akun', 'unitKerja']);
 
         $whereAkun = function ($query) {
-            $query->where('tipe', 1)
-                ->where('kelompok', 1)
-                ->where('jenis', 1)
-                ->where('is_parent', false);
+            $query->where('is_parent', false);
         };
-        $akun = $this->akun->get(['*'], $whereAkun);
-        $unitKerja = $this->unitKerja->get();
-        return view('admin.rekening_bendahara.index', compact('bendahara', 'akun', 'unitKerja'));
+        $akun       = $this->akun->get(['*'], $whereAkun);
+        $akun       = collect($akun);
+        // $sortedAkun = $akun->sortBy(['tipe', 'kelompok', 'jenis', 'objek', 'rincian', 'sub1']);
+        $sortedAkun = $akun->sortBy('kode_akun');
+        // dd($sortedAkun);
+        $unitKerja  = $this->unitKerja->get();
+        return view('admin.rekening_bendahara.index', compact('bendahara', 'sortedAkun', 'unitKerja'));
     }
 
     /**
