@@ -119,8 +119,8 @@ class StsController extends Controller
     {
         $prefix = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STS);
         $this->prefixPenomoran->makeModel();
-        $prefixNl = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STSNL);
-        $unitKerja = $this->unitKerja->get();
+        $prefixNl   = $this->prefixPenomoran->findBy('formulir', '=', PrefixPenomoran::FORMULIR_STSNL);
+        $unitKerja  = $this->unitKerja->get();
 
         $where = function ($query) use ($request) {
             if (!auth()->user()->hasRole('Admin')) {
@@ -142,18 +142,20 @@ class StsController extends Controller
         $sts = $this->sts->get(['*'], $where, ['unitKerja']);
 
         $prefixPenomoran = explode('/', $prefix->format_penomoran);
-        $prefixPenomoranNl = explode('/', $prefixNl->format_penomoran);
+        // $prefixPenomoranNl = explode('/', $prefixNl->format_penomoran);
         
-        $sts->map(function ($item) use ($prefixPenomoran, $prefixPenomoranNl) {
+        // $sts->map(function ($item) use ($prefixPenomoran, $prefixPenomoranNl) {
+
+        $sts->map(function ($item) use ($prefixPenomoran) {
 
             $item->total_nominal = $item->sumberDanaSts->sum('nominal');
             if ($item->nomor_otomatis) {
-                if ($item->nl){
-                    $nomorFix = nomor_fix($prefixPenomoranNl, $item->nomor, $item->kode_unit_kerja);
-                }else {
+                // if ($item->nl){
+                    // $nomorFix = nomor_fix($prefixPenomoranNl, $item->nomor, $item->kode_unit_kerja);
+                // }else {
                     $nomorFix = nomor_fix($prefixPenomoran, $item->nomor, $item->kode_unit_kerja);
 
-                }
+                // }
                 $item->nomorfix = $nomorFix;
             } else {
                 $item->nomorfix = $item->nomor;
