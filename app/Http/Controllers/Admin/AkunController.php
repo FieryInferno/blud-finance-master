@@ -192,32 +192,32 @@ class AkunController extends Controller
      */
     public function getAkunRba221(Request $request)
     {
-        $unitKerja = $request->unit_kerja;
-        $rba = $this->rba->getRba221($unitKerja, auth()->user()->status, Rba::KODE_RBA_221);
+        $unitKerja  = $request->unit_kerja;
+        $rba        = $this->rba->getRba221($unitKerja, auth()->user()->status, Rba::KODE_RBA_221);
 
-        $whereSpd = function ($query) use ($unitKerja) {
+        $whereSpd   = function ($query) use ($unitKerja) {
             $query->where('kode_unit_kerja', $unitKerja);
         };
 
-        $spd = $this->spd->get(['*'], $whereSpd, ['spdRincian']);
+        $spd        = $this->spd->get(['*'], $whereSpd, ['spdRincian']);
 
-        $totalSpd = $spd->sum(function ($item) {
+        $totalSpd   = $spd->sum(function ($item) {
             return $item->spdRincian->sum('nominal');
         });
 
-        $anggaran = $rba->sum(function ($item) {
+        $anggaran   = $rba->sum(function ($item) {
             return $item->rincianSumberDana->sum('nominal');
         });
 
         $rba->map(function ($item) use($totalSpd, $anggaran){
-            $item->total_nominal = $anggaran;
-            $item->kode_kegiatan = $item->mapKegiatan->blud->kode;
-            $item->nama_kegiatan = $item->mapKegiatan->blud->nama_kegiatan;
-            $item->total_spd = $totalSpd;
+            $item->total_nominal    = $anggaran;
+            $item->kode_kegiatan    = $item->mapSubKegiatan->subKegiatanBlud->kodeSubKegiatan;
+            $item->nama_kegiatan    = $item->mapSubKegiatan->subKegiatanBlud->namaSubKegiatan;
+            $item->total_spd        = $totalSpd;
         });
         
         foreach ($rba as $value) {
-            unset($value->mapKegiatan);
+            unset($value->mapSubKegiatan);
             unset($value->rincianSumberDana);
         }
 

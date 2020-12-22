@@ -78,9 +78,9 @@ class RBARepository extends Repository
      */
     public function getRba221($unitKerja, $tipe, $kodeRba)
     {
-        $rba = Rba::with(['rincianSumberDana.akun', 'mapKegiatan.blud'])
+        $rba = Rba::with(['rincianSumberDana.akun', 'mapSubKegiatan.subKegiatanBlud'])
             ->where('kode_unit_kerja', $unitKerja)
-            ->where('tipe', $tipe)
+            // ->where('tipe', $tipe)
             ->where('kode_rba', $kodeRba)
             ->get();
 

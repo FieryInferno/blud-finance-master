@@ -113,7 +113,7 @@
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" id="data-tbp-tab" data-toggle="tab" href="#data_tbp" role="tab" aria-controls="data-tbp" aria-selected="false">
-                              Kegiatan
+                              Sub Kegiatan
                             </a>
                           </li>
                         </ul>
@@ -151,13 +151,13 @@
                             <div class="row">
                               <div class="col-md-12">
                                 <button class="btn btn-primary btn-sm mb-3" type="button" data-toggle="modal" data-target="#akunModal">
-                                    <i class="fas fa-plus"></i> Pilih Kegiatan
+                                  <i class="fas fa-plus"></i> Pilih Sub Kegiatan
                                 </button>
                                 <table class="table table-rba">
                                   <thead>
                                     <th></th>
-                                    <th>Kode Kegiatan</th>
-                                    <th>Nama Kegiatan</th>
+                                    <th>Kode Sub Kegiatan</th>
+                                    <th>Nama Sub Kegiatan</th>
                                     <th>Anggaran</th>
                                     <th>SPD Sebelumnya</th>
                                     <th>Nominal</th>
@@ -375,7 +375,7 @@
         });
 
       function getRba221(){
-         $.ajax({
+        $.ajax({
           type: "GET",
           url: "{{ route('admin.akun.rba221') }}",
           data: "unit_kerja="+$("#unit_kerja").val(),
