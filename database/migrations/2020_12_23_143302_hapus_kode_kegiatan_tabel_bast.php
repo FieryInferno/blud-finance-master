@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UbahForeignKeyKegiatanID extends Migration
+class HapusKodeKegiatanTabelBast extends Migration
 {
     /**
      * Run the migrations.
@@ -14,10 +14,8 @@ class UbahForeignKeyKegiatanID extends Migration
     public function up()
     {
         Schema::table('bast', function (Blueprint $table) {
-            $table->dropForeign(['kegiatan_id']);
-            $table->dropColumn('kegiatan_id');
-            $table->unsignedBigInteger('idSubKegiatan');
-            $table->foreign('idSubKegiatan')->references('idSubKegiatan')->on('subKegiatan');
+            $table->dropForeign(['kode_kegiatan']);
+            $table->dropColumn('kode_kegiatan');
         });
     }
 
