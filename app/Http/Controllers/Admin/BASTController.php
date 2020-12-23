@@ -175,18 +175,18 @@ class BASTController extends Controller
             DB::beginTransaction();
 
             $bast = $this->bast->create([
-                'nomor' => $request->nomor,
-                'no_kontrak' => $request->nomor_kontrak, 
-                'tgl_kontrak' => $request->tanggal_kontrak, 
-                'no_pemeriksaan' => $request->nomor_pemeriksaan, 
-                'tgl_pemeriksaan' => $request->tanggal_pemeriksaan, 
-                'no_penerimaan' => $request->nomor_penerimaan, 
-                'tgl_penerimaan' => $request->tanggal_penerimaan, 
-                'nominal' => parse_format_number($request->nominal_kontrak),
-                'kode_unit_kerja' => $request->unit_kerja,
-                'pihak_ketiga_id' => $request->pihak_ketiga,
-                'kegiatan_id' => $request->kegiatan,
-                'pembuat_komitmen' => $request->pejabat_pembuat_komitmen
+                'nomor'             => $request->nomor,
+                'no_kontrak'        => $request->nomor_kontrak, 
+                'tgl_kontrak'       => $request->tanggal_kontrak, 
+                'no_pemeriksaan'    => $request->nomor_pemeriksaan, 
+                'tgl_pemeriksaan'   => $request->tanggal_pemeriksaan, 
+                'no_penerimaan'     => $request->nomor_penerimaan, 
+                'tgl_penerimaan'    => $request->tanggal_penerimaan, 
+                'nominal'           => parse_format_number($request->nominal_kontrak),
+                'kode_unit_kerja'   => $request->unit_kerja,
+                'pihak_ketiga_id'   => $request->pihak_ketiga,
+                'idSubKegiatan'     => $request->subKegiatan,
+                'pembuat_komitmen'  => $request->pejabat_pembuat_komitmen
             ]);
 
             if (!$bast) {
