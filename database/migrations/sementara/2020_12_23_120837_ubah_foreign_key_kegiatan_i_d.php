@@ -16,7 +16,7 @@ class UbahForeignKeyKegiatanID extends Migration
         Schema::table('bast', function (Blueprint $table) {
             $table->dropForeign(['kegiatan_id']);
             $table->dropColumn('kegiatan_id');
-            $table->string('idSubKegiatan');
+            $table->unsignedBigInteger('idSubKegiatan');
             $table->foreign('idSubKegiatan')->references('idSubKegiatan')->on('subKegiatan');
         });
     }
