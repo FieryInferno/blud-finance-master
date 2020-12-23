@@ -16,7 +16,7 @@ class GantiForeignKeyKodeKegiatan extends Migration
         Schema::table('spd_rincian', function (Blueprint $table) {
             $table->dropForeign(['kode_kegiatan']);
             $table->dropColumn('kode_kegiatan');
-            $table->string('kodeSubKegiatan');
+            $table->string('kodeSubKegiatan')->after('spd_id');
             $table->foreign('kodeSubKegiatan')->references('kodeSubKegiatan')->on('subKegiatan');
         });
     }

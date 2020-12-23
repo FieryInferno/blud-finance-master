@@ -119,10 +119,10 @@ class RBARepository extends Repository
      * @param [type] $kodeKegiatan
      * @return void
      */
-    public function getRba221ByKegiatan($unitKerja, $kodeKegiatan)
+    public function getRba221ByKegiatan($unitKerja, $kodeSubKegiatan)
     {
-        $rba = Rba::whereHas('mapKegiatan.blud', function ($query) use ($kodeKegiatan){
-            $query->where('kode', $kodeKegiatan);
+        $rba = Rba::whereHas('mapSubKegiatan.subKegiatanBlud', function ($query) use ($kodeSubKegiatan){
+            $query->where('kodeSubKegiatan', $kodeSubKegiatan);
         })->with('rincianAnggaran.akun')
             ->where('kode_rba', Rba::KODE_RBA_221)
             ->where('kode_unit_kerja', $unitKerja)

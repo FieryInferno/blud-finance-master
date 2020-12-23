@@ -58,7 +58,6 @@
                         
                       </div>
                     </div>
-                   
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
@@ -76,9 +75,9 @@
                     <div class="form-group">
                         <div class="row">
                             <div class="col">
-                                <label>Kegiatan</label>
-                                <select name="kegiatan" id="kegiatan" class="form-control">
-                                    <option value="">Pilih Kegiatan</option>
+                                <label>Sub Kegiatan</label>
+                                <select name="subKegiatan" id="subKegiatan" class="form-control">
+                                    <option value="">Pilih Sub Kegiatan</option>
                                 </select>
                             </div>
                         </div>
@@ -255,7 +254,7 @@
   <script>
       var sumberDanaSelected = []
       $(document).ready(function () {
-       
+      
         initMaskMoney();
         getKegiatanRba221();
         getPihakKetiga();
@@ -271,7 +270,7 @@
           getDataPihakKetiga();
         });
 
-        $("#kegiatan").change(function() {
+        $("#subKegiatan").change(function() {
           getKodeAkun();
         });
 
@@ -396,10 +395,10 @@
 
           function getKodeAkun(){
             $.ajax({
-              type: "GET",
-              url: "{{ route('admin.akun.kegiatan') }}",
-              data: "unit_kerja="+$("#unit_kerja").val()+"&kegiatan="+$("#kegiatan").val(),
-              success:function(response){
+              type    : "GET",
+              url     : "{{ route('admin.akun.kegiatan') }}",
+              data    : "unit_kerja="+$("#unit_kerja").val()+"&subKegiatan="+$("#subKegiatan").val(),
+              success : function(response){
                 tableRincianPengadaan.clear().draw();
                 let data = [];
                 response.data.forEach(function (item) {
@@ -469,16 +468,16 @@
         });
 
       function getKegiatanRba221() {
-        var kegiatan = $("#kegiatan");
-        kegiatan.empty();
+        var subKegiatan = $("#subKegiatan");
+        subKegiatan.empty();
         $.ajax({
-          type: "GET",
-          url: "{{ route('admin.akun.kegiatanrba221') }}",
-          data: "unit_kerja="+$("#unit_kerja").val(),
+          type  : "GET",
+          url   : "{{ route('admin.akun.kegiatanrba221') }}",
+          data  : "unit_kerja="+$("#unit_kerja").val(),
           success:function(response) {
-            kegiatan.append($("<option />").text('Pilih kegiatan'));
+            subKegiatan.append($("<option />").text('Pilih sub kegiatan'));
             $.each(response.data, function() {
-                kegiatan.append($("<option />").val(this.id).text(this.kode + " - " + this.nama_kegiatan));
+                subKegiatan.append($("<option />").val(this.idSubKegiatan).text(this.kodeSubKegiatan + " - " + this.namaSubKegiatan));
             });
           }
         })

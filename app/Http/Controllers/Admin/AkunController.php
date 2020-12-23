@@ -11,25 +11,26 @@ use App\Repositories\DataDasar\SSHRepository;
 use App\Repositories\DataDasar\AkunRepository;
 use App\Repositories\DataDasar\KategoriAkunRepository;
 use App\Repositories\Organisasi\KegiatanRepository;
+use App\Repositories\Organisasi\SubKegiatanRepository;
 use App\Repositories\RBA\RBARepository;
 
 class AkunController extends Controller
 {
-     /**
+    /**
      * Akun repository.
      * 
      * @var AkunRepository
      */
     private $akun;
 
-     /**
+    /**
      * Kategori repository.
      * 
      * @var KategorRepository
      */
     private $kategori;
 
-     /**
+    /**
      * SSH repository.
      * 
      * @var SSHRepository
@@ -56,6 +57,7 @@ class AkunController extends Controller
      * @var SPDRepository
      */
     private $spd;
+    private $subKegiatan;
 
     /**
      * Constructor.
@@ -66,14 +68,16 @@ class AkunController extends Controller
         SSHRepository $ssh,
         RBARepository $rba,
         KegiatanRepository $kegiatan,
-        SPDRepository $spd
+        SPDRepository $spd,
+        SubKegiatanRepository $subKegiatan
     ) {
-        $this->akun = $akun;
-        $this->kategori = $kategori;
-        $this->ssh = $ssh;
-        $this->rba = $rba;
-        $this->kegiatan = $kegiatan;
-        $this->spd = $spd;
+        $this->akun         = $akun;
+        $this->kategori     = $kategori;
+        $this->ssh          = $ssh;
+        $this->rba          = $rba;
+        $this->kegiatan     = $kegiatan;
+        $this->spd          = $spd;
+        $this->subKegiatan  = $subKegiatan;
     }
 
     /**
@@ -114,7 +118,7 @@ class AkunController extends Controller
         return redirect()->back()
                 ->with(['success' => "{$akun->nama_akun} berhasil disimpan"]);
     }
-   
+
     /**
      * Update the specified resource in storage.
      *
@@ -235,25 +239,24 @@ class AkunController extends Controller
      */
     public function getKegiatanRba221(Request $request)
     {
-        $unitKerja = $request->unit_kerja;
-        $rba = $this->rba->getRba221($unitKerja, auth()->user()->status, Rba::KODE_RBA_221);
-
+        $unitKerja  = $request->unit_kerja;
+        $rba        = $this->rba->getRba221($unitKerja, auth()->user()->status, Rba::KODE_RBA_221);
+        
         $kegiatanId = [];
         foreach ($rba as  $item) {
-            if (! in_array($item->mapKegiatan->kegiatan_id_blud, $kegiatanId)){
-                array_push($kegiatanId, $item->mapKegiatan->kegiatan_id_blud);
+            if (! in_array($item->mapSubKegiatan->kodeSubKegiatanBlud, $kegiatanId)){
+                array_push($kegiatanId, $item->mapSubKegiatan->kodeSubKegiatanBlud);
             }
         }
 
-        $whereKegiatan = function ($query) use($kegiatanId){
-            $query->whereIn('id', $kegiatanId);
+        $whereSubKegiatan   = function ($query) use($kegiatanId){
+            $query->whereIn('kodeSubKegiatan', $kegiatanId);
         };
 
-        $kegiatan =  $this->kegiatan->get(['*'], $whereKegiatan);
+        $subKegiatan    =  $this->subKegiatan->get(['*'], $whereSubKegiatan);
 
-        $response = ['data' => $kegiatan];
+        $response   = ['data' => $subKegiatan];
         return response()->json($response, 200);
-
     }
 
     /**
@@ -263,10 +266,11 @@ class AkunController extends Controller
      */
     public function getAkunByKegiatan(Request $request)
     {
-        $unitKerja = $request->unit_kerja;
-        $kegiatan = $this->kegiatan->find($request->kegiatan, ['*']);
-        $kodeKegiatan = $kegiatan->kode;
-        $rba = $this->rba->getRba221ByKegiatan($unitKerja, $kodeKegiatan);
+        $unitKerja          = $request->unit_kerja;
+        $subKegiatan        = $this->subKegiatan->find($request->subKegiatan, ['*']);
+        
+        $kodeSubKegiatan    = $subKegiatan->kodeSubKegiatan;
+        $rba                = $this->rba->getRba221ByKegiatan($unitKerja, $kodeSubKegiatan);
 
         $akunId = [];
         foreach ($rba->rincianAnggaran as $value) {
