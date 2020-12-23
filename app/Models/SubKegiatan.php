@@ -24,4 +24,9 @@ class SubKegiatan extends Model
     {
         return $this->hasMany('App\Models\MapSubKegiatan', 'kodeSubKegiatanApbd', 'kodeSubKegiatan');
     }
+
+    public function spdRincian()
+    {
+        return $this->hasMany('App\Models\SpdRincian', 'kodeSubKegiatan', 'kodeSubKegiatan');
+    }
 }

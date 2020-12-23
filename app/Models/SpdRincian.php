@@ -14,7 +14,7 @@ class SpdRincian extends Model
      * @var array
      */
     protected $fillable = [
-        'spd_id', 'kode_kegiatan', 'nama_kegiatan', 'anggaran', 'spd_sebelumnya', 'nominal', 'total_spd'
+        'spd_id', 'kodeSubKegiatan', 'nama_kegiatan', 'anggaran', 'spd_sebelumnya', 'nominal', 'total_spd'
     ];
 
     /**
@@ -25,6 +25,11 @@ class SpdRincian extends Model
     public function kegiatan()
     {
         return $this->belongsTo(Kegiatan::class, 'kode_kegiatan', 'kode');
+    }
+
+    public function subKegiatan()
+    {
+        return $this->belongsTo(SubKegiatan::class, 'kodeSubKegiatan', 'kodeSubKegiatan');
     }
 
 }

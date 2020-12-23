@@ -188,15 +188,15 @@ class SPDController extends Controller
                 throw new Exception("Error create spd");
             }
 
-            foreach ($request['kode_kegiatan'] as $key => $value) {
+            foreach ($request['kodeSubKegiatan'] as $key => $value) {
                 $rincianSpd = $this->spdRincian->create([
-                    'spd_id' => $spd->id, 
-                    'kode_kegiatan' => $request->kode_kegiatan[$key], 
-                    'nama_kegiatan' => $request->nama_kegiatan[$key], 
-                    'anggaran' => parse_format_number($request->anggaran[$key]), 
-                    'spd_sebelumnya' => parse_format_number($request->spd_sebelumnya[$key]), 
-                    'nominal' => parse_format_number($request->nominal[$key]), 
-                    'total_spd' => parse_format_number($request->total_spd[$key])
+                    'spd_id'            => $spd->id, 
+                    'kodeSubKegiatan'   => $request->kodeSubKegiatan[$key], 
+                    'nama_kegiatan'     => $request->namaSubKegiatan[$key], 
+                    'anggaran'          => parse_format_number($request->anggaran[$key]), 
+                    'spd_sebelumnya'    => parse_format_number($request->spd_sebelumnya[$key]), 
+                    'nominal'           => parse_format_number($request->nominal[$key]), 
+                    'total_spd'         => parse_format_number($request->total_spd[$key])
                 ]);
 
                 if (!$rincianSpd) {

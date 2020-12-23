@@ -192,7 +192,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Pilih Kegiatan </h5>
+        <h5 class="modal-title">Pilih Sub Kegiatan </h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -202,8 +202,8 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th>Kode Kegiatan</th>
-                  <th>Nama Kegiatan</th>
+                  <th>Kode Sub Kegiatan</th>
+                  <th>Nama Sub Kegiatan</th>
                 </tr>
               </thead>
               <tbody>
@@ -296,45 +296,44 @@
         $(".date").datepicker('update', '{{ date('Y-m-d') }}');
 
         $('#form-spd').on('submit', function (e) {
-        e.preventDefault();
-        var formData = $(this).serialize();
-        $.ajax({
-          type: "POST",
-          url: "{{ route('admin.spd.save') }}",
-          data: formData,
-          beforeSend:function() {
-            $("#buttonSubmit").prop('disabled', true);
-          },
-          success:function(response){
-            iziToast.success({
-              title: 'Sukses!',
-              message: 'SPD berhasil disimpan',
-              position: 'topRight',
-              timeout: 2000,
-              onClosed: function () {
-                window.location.href = document.referrer
+          e.preventDefault();
+          var formData = $(this).serialize();
+          $.ajax({
+            type: "POST",
+            url: "{{ route('admin.spd.save') }}",
+            data: formData,
+            beforeSend:function() {
+              $("#buttonSubmit").prop('disabled', true);
+            },
+            success:function(response){
+              iziToast.success({
+                title: 'Sukses!',
+                message: 'SPD berhasil disimpan',
+                position: 'topRight',
+                timeout: 2000,
+                onClosed: function () {
+                  window.location.href = document.referrer
+                }
+              });
+            },
+            error:function (data, jqXHR) {
+              let errors = [];
+              let validationMessages = data.responseJSON.errors;
+              for (var property in validationMessages) {
+                if (validationMessages.hasOwnProperty(property)) {
+                  errors.push(validationMessages[property][0]);
+                }
               }
-            });
-          },
-          error:function (data, jqXHR) {
-            let errors = [];
-            let validationMessages = data.responseJSON.errors;
-            for (var property in validationMessages) {
-              if (validationMessages.hasOwnProperty(property)) {
-                errors.push(validationMessages[property][0]);
-              }
+
+              iziToast.error({
+                title: 'Gagal!',
+                message: errors.toString(),
+                position: 'topRight'
+              });
+
+              $("#buttonSubmit").prop('disabled', false);
             }
-
-            iziToast.error({
-              title: 'Gagal!',
-              message: errors.toString(),
-              position: 'topRight'
-            });
-
-            $("#buttonSubmit").prop('disabled', false);
-          }
-        })
-
+          })
       });
 
           // event get rekening
@@ -354,8 +353,8 @@
           rekening.forEach(function (item) {
             data.push({
               '': `<button type="button" class="btn btn-remove btn-sm btn-danger"><i class="fas fa-minus"></i></button>`,
-              'Kode Kegiatan': `<input type="text" name="kode_kegiatan[]" class="form-control" value="${item.kode}" readonly>`,
-              'Nama Kegiatan': `<input type="text" name="nama_kegiatan[]" class="form-control" value="${item.nama}" readonly>`,
+              'Kode Kegiatan': `<input type="text" name="kodeSubKegiatan[]" class="form-control" value="${item.kode}" readonly>`,
+              'Nama Kegiatan': `<input type="text" name="namaSubKegiatan[]" class="form-control" value="${item.nama}" readonly>`,
               'Anggaran': `<input type="text" name="anggaran[]" class="form-control money" readonly value="${rupiah(item.anggaran)}">`,
               'Spd Sebelumnya' : `<input type="text" class="form-control" readonly name="spd_sebelumnya[]" value="${rupiah(item.spdSebelumnya)}">`,
               'Nominal' : '<input type="text" class="form-control money" name="nominal[]" value="0" onkeyup="typingNominal(event)">',
@@ -384,10 +383,10 @@
             $('.table-rekening tbody').empty();
             kegiatan.forEach(function (item) {
               $('.table-rekening tbody').append(`
-                <tr data-kode-kegiatan="${item.kode_kegiatan}" data-nama-kegiatan="${item.nama_kegiatan}" data-anggaran="${item.total_nominal}" data-spd-sebelumnya="${item.total_spd}">
-                  <td><input type="checkbox" name="rekening" value="${item.kode_kegiatan}"></td>
-                  <td>${item.kode_kegiatan}</td>
-                  <td>${item.nama_kegiatan}</td>
+                <tr data-kode-kegiatan="${item.kodeSubKegiatan}" data-nama-kegiatan="${item.namaSubKegiatan}" data-anggaran="${item.total_nominal}" data-spd-sebelumnya="${item.total_spd}">
+                  <td><input type="checkbox" name="rekening" value="${item.kodeSubKegiatan}"></td>
+                  <td>${item.kodeSubKegiatan}</td>
+                  <td>${item.namaSubKegiatan}</td>
                 </tr>
               `);
             });

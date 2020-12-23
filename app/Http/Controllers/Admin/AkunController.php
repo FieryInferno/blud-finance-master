@@ -211,8 +211,8 @@ class AkunController extends Controller
 
         $rba->map(function ($item) use($totalSpd, $anggaran){
             $item->total_nominal    = $anggaran;
-            $item->kode_kegiatan    = $item->mapSubKegiatan->subKegiatanBlud->kodeSubKegiatan;
-            $item->nama_kegiatan    = $item->mapSubKegiatan->subKegiatanBlud->namaSubKegiatan;
+            $item->kodeSubKegiatan  = $item->mapSubKegiatan->subKegiatanBlud->kodeSubKegiatan;
+            $item->namaSubKegiatan  = $item->mapSubKegiatan->subKegiatanBlud->namaSubKegiatan;
             $item->total_spd        = $totalSpd;
         });
         
