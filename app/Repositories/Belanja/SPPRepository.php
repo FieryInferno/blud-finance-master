@@ -37,11 +37,11 @@ class SPPRepository extends Repository
      * @param [type] $kodeKegiatan
      * @return void
      */
-    public function getTotalSpp($kodeKegiatan, $kodeUnit)
+    public function getTotalSpp($kodeSubKegiatan, $kodeUnit)
     {
-        $totalSpp = 0;
-        $spp = Spp::with(['bast' => function ($query) use($kodeKegiatan){
-            $query->where('kode_kegiatan', $kodeKegiatan);
+        $totalSpp   = 0;
+        $spp        = Spp::with(['bast' => function ($query) use($kodeSubKegiatan){
+            $query->where('kode_kegiatan', $kodeSubKegiatan);
         }])
             ->where('kode_unit_kerja', $kodeUnit)
             ->get();

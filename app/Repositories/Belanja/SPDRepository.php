@@ -36,19 +36,19 @@ class SPDRepository extends Repository
      * @param [type] $kodeKegiatan
      * @return void
      */
-    public function getTotalSpdKegiatan($kodeKegiatan, $kodeUnitKerja)
+    public function getTotalSpdKegiatan($kodeSubKegiatan, $kodeUnitKerja)
     {
         $totalSpd = 0;
 
-        $spd = Spd::with(['spdRincian' => function ($query) use($kodeKegiatan) {
-            $query->where('kode_kegiatan', $kodeKegiatan);
+        $spd = Spd::with(['spdRincian' => function ($query) use($kodeSubKegiatan) {
+            $query->where('kodeSubKegiatan', $kodeSubKegiatan);
         }])
             ->where('kode_unit_kerja', $kodeUnitKerja)
             ->get();
 
         foreach ($spd as $item) {
             foreach ($item->spdRincian as $rincian) {
-                if ($rincian->kode_kegiatan == $kodeKegiatan){
+                if ($rincian->kodeSubKegiatan == $kodeSubKegiatan){
                     $totalSpd += $rincian->nominal;
                 }
             }
