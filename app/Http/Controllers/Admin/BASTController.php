@@ -356,18 +356,18 @@ class BASTController extends Controller
      */
     public function getData(Request $request)
     {
-        $spp = $this->spp->get(['*']);
+        $spp    = $this->spp->get(['*']);
         $bastId = $spp->pluck('bast_id');
-        $where = function ($query) use($request, $bastId){
+        $where  = function ($query) use($request, $bastId){
             $query->where('kode_unit_kerja', $request->kode_unit_kerja)
                 ->where('tgl_kontrak', '<', $request->tanggal)
                 ->whereNotIn('id', $bastId);
         };
 
-        $bast = $this->bast->get(['*'], $where, ['pihakKetiga', 'kegiatan']);
+        $bast   = $this->bast->get(['*'], $where, ['pihakKetiga', 'subKegiatan']);
 
-        $response = [
-            'data' => $bast
+        $response   = [
+            'data'  => $bast
         ];
 
         return response()->json($response, 200);

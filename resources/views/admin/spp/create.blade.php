@@ -775,7 +775,7 @@
           success:function(response){
             bast.append($("<option />").text("Pilih Bast"));
             $.each(response.data, function() {
-                bast.append($("<option />").val(this.id).text(this.nomor+ ' - ' +this.kegiatan.nama_kegiatan));
+                bast.append($("<option />").val(this.id).text(this.nomor+ ' - ' +this.subKegiatan.namaSubKegiatan));
             });
           }
         })

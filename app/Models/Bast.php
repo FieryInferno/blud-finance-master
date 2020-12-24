@@ -34,4 +34,9 @@ class Bast extends Model
     {
         return $this->belongsTo(Kegiatan::class, 'kegiatan_id');
     }
+
+    public function subKegiatan()
+    {
+        return $this->belongsTo(SubKegiatan::class, 'idSubKegiatan', 'idSubKegiatan');
+    }
 }
