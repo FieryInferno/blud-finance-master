@@ -387,7 +387,7 @@ class BASTController extends Controller
     public function getKegiatanBast(Request $request)
     {
         try {
-            $bast   = $this->bast->find($request->bast_id, ['*'], ['rincianPengadaan.akun', 'subKegiatan']);
+            $bast   = $this->bast->find($request->bast_id, ['*'], ['rincianPengadaan.akun', 'subKegiatan.kegiatan']);
 
             if (! $bast){
                 throw new \Exception('Bast not found');
