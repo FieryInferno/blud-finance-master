@@ -815,26 +815,25 @@ class SPPController extends Controller
      */
     public function getPaguKegiatan(Request $request)
     {
-        $bast = $this->bast->find($request->bast_id, ['id', 'kegiatan_id', 'kode_unit_kerja', 'tgl_kontrak'], ['rincianPengadaan', 'kegiatan']);
+        $bast   = $this->bast->find($request->bast_id, ['id', 'idSubKegiatan', 'kode_unit_kerja', 'tgl_kontrak'], ['rincianPengadaan', 'subKegiatan']);
 
-        $kodeKegiatan = $bast ? $bast->kegiatan->kode : '';
-        $kodeUnitKerja = $bast ? $bast->kode_unit_kerja : '';
-        $tanggal = $bast ? $bast->tgl_kontrak : '';
-
-        $totalBast = 0;
+        $kodeSubKegiatan    = $bast ? $bast->subKegiatan->kodeSubKegiatan : '';
+        $kodeUnitKerja      = $bast ? $bast->kode_unit_kerja : '';
+        $tanggal            = $bast ? $bast->tgl_kontrak : '';
+        $totalBast          = 0;
         if ($bast->rincianPengadaan){
             foreach ($bast->rincianPengadaan as $value) {
-                $totalBast += ($value->unit * $value->harga);
+                $totalBast  += ($value->unit * $value->harga);
             }
         }
 
-        $kodeRekening = $bast->rincianPengadaan ? $bast->rincianPengadaan->pluck('kode_akun') : null;
+        $kodeRekening       = $bast->rincianPengadaan ? $bast->rincianPengadaan->pluck('kode_akun') : null;
         
-        $akunId = $this->akun->getAkunId($kodeRekening);
+        $akunId             = $this->akun->getAkunId($kodeRekening);
 
-        $paguRbaByRekening = $this->rba->getRba221ByRekening($kodeUnitKerja, $akunId);
+        $paguRbaByRekening  = $this->rba->getRba221ByRekening($kodeUnitKerja, $akunId);
 
-        $totalPaguRba = $paguRbaByRekening->sum(function ($item) {
+        $totalPaguRba       = $paguRbaByRekening->sum(function ($item) {
             return $item->rincianSumberDana->sum('nominal');
         });
 
@@ -842,27 +841,27 @@ class SPPController extends Controller
             return $item->rincianSumberDana->sum('nominal_pak');
         });
 
-        $totalPaguRba += $nominalPak;
+        $totalPaguRba   += $nominalPak;
 
-        $totalSpd = 0;
-        $totalSpd = $this->spd->getTotalSpdKegiatan($kodeKegiatan, $kodeUnitKerja);
+        $totalSpd       = 0;
+        $totalSpd       = $this->spd->getTotalSpdKegiatan($kodeSubKegiatan, $kodeUnitKerja);
 
-        $totalSpp = 0;
-        $totalSpp = $this->spp->getTotalSpp($kodeKegiatan, $kodeUnitKerja);
+        $totalSpp       = 0;
+        $totalSpp       = $this->spp->getTotalSpp($kodeSubKegiatan, $kodeUnitKerja);
 
         if (!$kodeRekening) {
-            $totalSppPerRekening = 0;
+            $totalSppPerRekening    = 0;
         }else {
-            $totalSppPerRekening = $this->spp->getTotalSppByRekening($kodeUnitKerja, $kodeRekening);
+            $totalSppPerRekening    = $this->spp->getTotalSppByRekening($kodeUnitKerja, $kodeRekening);
         }
 
         $totalKontraPos = 0;
 
-        $response = [
-            'data' => [
+        $response   = [
+            'data'  => [
                 'sisa_spd_kegiatan' => ($totalSpd - $totalSpp),
-                'tanggal_bast' => $tanggal,
-                'sisa_pagu' => ($totalPaguRba + $totalKontraPos) - $totalSppPerRekening 
+                'tanggal_bast'      => $tanggal,
+                'sisa_pagu'         => ($totalPaguRba + $totalKontraPos) - $totalSppPerRekening 
             ]
         ];
 

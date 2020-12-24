@@ -858,17 +858,16 @@
             let sisaKas = data.sisa_kas;
             $("input[name=sisa_spd_total]").val(formatCurrency(spdTotal));
             $("input[name=sisa_kas]").val(formatCurrency(sisaKas));
-           
           }
         })
       }
 
       function getSpdKegiatanPengajuan(){
         $.ajax({
-          type: "GET",
-          url: "{{ route('admin.spp.getkegiatanpengajuan') }}",
-          data: "bast_id="+$("#bast").val(),
-          success:function(response){
+          type    : "GET",
+          url     : "{{ route('admin.spp.getkegiatanpengajuan') }}",
+          data    : "bast_id="+$("#bast").val(),
+          success : function(response){
             let data = response.data;
             let sisaSpdKegiatan = data.sisa_spd_kegiatan;
             let sisaPaguPengajuan = data.sisa_pagu;
