@@ -386,37 +386,37 @@ class BASTController extends Controller
 
     public function getKegiatanBast(Request $request)
     {
-       try {
-            $bast = $this->bast->find($request->bast_id, ['*'], ['rincianPengadaan.akun', 'kegiatan']);
+        try {
+            $bast   = $this->bast->find($request->bast_id, ['*'], ['rincianPengadaan.akun', 'subKegiatan']);
 
             if (! $bast){
                 throw new \Exception('Bast not found');
             }
 
-            $totalAllKegiatan = 0;
+            $totalAllKegiatan   = 0;
             foreach ($bast->rincianPengadaan as $value) {
                 $totalAllKegiatan += ((float) $value->harga * $value->unit);
             }
 
-            $rincian = $bast ? $bast->rincianPengadaan : null;
+            $rincian    = $bast ? $bast->rincianPengadaan : null;
 
-            $response = [
-                'data' => [
-                    'total' => $totalAllKegiatan,
-                    'bast' => $bast,
-                    'rincian' => $rincian,
+            $response   = [
+                'data'  => [
+                    'total'     => $totalAllKegiatan,
+                    'bast'      => $bast,
+                    'rincian'   => $rincian,
                 ],
-                'total_data' => $bast->count()
+                'total_data'    => $bast->count()
             ];
 
             return response()->json($response, 200);
-       }catch(\Exception $e){
+        }catch(\Exception $e){
             $response = [
                 'message' => $e->getMessage(),
                 'total_data' => 0
             ];
 
             return response()->json($response, 200);
-       }
+        }
     }
 }

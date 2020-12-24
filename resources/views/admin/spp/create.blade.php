@@ -135,7 +135,7 @@
                           </li>
                           <li class="nav-item">
                             <a class="nav-link" id="data-kegiatan-tab" data-toggle="tab" href="#data_kegiatan" role="tab" aria-controls="data-kegiatan" aria-selected="false">
-                              Kegiatan
+                              Sub Kegiatan
                             </a>
                           </li>
                           <li class="nav-item">
@@ -223,41 +223,36 @@
                                   </tbody>
                                 </table>
                               </div>
-                           
                             </div>
                             </div>
                             <div class="tab-pane fade" id="data_kegiatan" role="tabpanel" aria-labelledby="data-kegiatan-tab">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <table class="table" id="table-kegiatan">
-                                  <thead>
-                                    <th>Kode Kegiatan</th>
-                                    <th>Nama Kegiatan</th>
-                                    <th>Nominal</th>
-                                  </thead>
-                                  <tbody>
-                                    
-                                  </tbody>
-                                </table>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <table class="table" id="table-kegiatan">
+                                    <thead>
+                                      <th>Kode Sub Kegiatan</th>
+                                      <th>Nama Sub Kegiatan</th>
+                                      <th>Nominal</th>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>
+                                </div>
                               </div>
-                            </div>
                             </div>
                             <div class="tab-pane fade" id="data_rincian_spp" role="tabpanel" aria-labelledby="data-rincian-spp-tab">
-                            <div class="row">
-                              <div class="col-md-12">
-                                <table class="table" id="table-spp">
-                                  <thead>
-                                    <th>Kode Kegiatan</th>
-                                    <th>Kode Akun</th>
-                                    <th>Nama Akun</th>
-                                    <th>Nominal</th>
-                                  </thead>
-                                  <tbody>
-                                    
-                                  </tbody>
-                                </table>
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <table class="table" id="table-spp">
+                                    <thead>
+                                      <th>Kode Sub Kegiatan</th>
+                                      <th>Kode Akun</th>
+                                      <th>Nama Akun</th>
+                                      <th>Nominal</th>
+                                    </thead>
+                                    <tbody></tbody>
+                                  </table>
+                                </div>
                               </div>
-                            </div>
                             </div>
                             <div class="tab-pane fade" id="data_pajak" role="tabpanel" aria-labelledby="data-pajak-tab">
                               <div class="row">
@@ -766,13 +761,13 @@
       }
 
       function getBast(){
-        var bast = $("#bast");
+        var bast  = $("#bast");
         bast.empty();
         $.ajax({
-          type: "GET", 
-          url: "{{ route('admin.bast.data') }}",
-          data: "kode_unit_kerja="+$("#unit_kerja").val()+"&tanggal="+$("#tanggal_spp").val(),
-          success:function(response){
+          type    : "GET", 
+          url     : "{{ route('admin.bast.data') }}",
+          data    : "kode_unit_kerja="+$("#unit_kerja").val()+"&tanggal="+$("#tanggal_spp").val(),
+          success :function(response){
             bast.append($("<option />").text("Pilih Bast"));
             $.each(response.data, function() {
                 bast.append($("<option />").val(this.id).text(this.nomor+ ' - ' +this.sub_kegiatan.namaSubKegiatan));
@@ -783,23 +778,23 @@
 
       function getKegiatanBast(){
         $.ajax({
-          type: "GET",
-          url: "{{ route('admin.bast.kegiatan') }}",
-          data: "bast_id="+$("#bast").val(),
-          success:function(response){
-            let data = response.data;
+          type    : "GET",
+          url     : "{{ route('admin.bast.kegiatan') }}",
+          data    : "bast_id="+$("#bast").val(),
+          success : function(response){
+            let data  = response.data;
             
             $("#table-kegiatan tbody").html('');
             $("#table-spp tbody").html('');
             $("#table-sumberdana tbody").html('');
             if (parseInt(response.total_data) > 0){
-              let kodeKegiatan = data.bast.kegiatan.kode_bidang+'.'+data.bast.kegiatan.kode_bidang+'.'+data.bast.kegiatan.kode;
+              let kodeKegiatan  = data.bast.sub_kegiatan.kegiatan.kode_bidang + '.' + data.bast.sub_kegiatan.kodeKegiatan + '.' + data.bast.sub_kegiatan.kodeSubKegiatan;
               $("#pihak-ketiga").val(data.bast.pihak_ketiga_id);
               getDataPihakKetiga();
               $('#table-kegiatan tbody').append(`
                   <tr>
                     <td>${kodeKegiatan}</td>
-                    <td>${data.bast.kegiatan.nama_kegiatan}</td>
+                    <td>${data.bast.sub_kegiatan.namaSubKegiatan}</td>
                     <td>${formatCurrency(data.total)} <input type="hidden" name="nominal_sumber_dana" value="${data.total}"></td>
                   </tr>
               `);
