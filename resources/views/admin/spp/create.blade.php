@@ -849,13 +849,13 @@
 
       function getPagu(){
         $.ajax({
-          type: "GET",
-          url: "{{ route('admin.spp.getpagu') }}",
-          data: "kode_unit_kerja="+$("#unit_kerja").val(),
-          success:function(response){
-            let data = response.data;
-            let spdTotal = data.spd_total;
-            let sisaKas = data.sisa_kas;
+          type    : "GET",
+          url     : "{{ route('admin.spp.getpagu') }}",
+          data    : "kode_unit_kerja="+$("#unit_kerja").val(),
+          success : function(response){
+            let data      = response.data;
+            let spdTotal  = data.spd_total;
+            let sisaKas   = data.sisa_kas;
             $("input[name=sisa_spd_total]").val(formatCurrency(spdTotal));
             $("input[name=sisa_kas]").val(formatCurrency(sisaKas));
           }
